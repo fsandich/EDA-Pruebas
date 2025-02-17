@@ -1,0 +1,14 @@
+---
+- name: Listen for events from Splunk
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+  rules:
+    - name: Handle Splunk event
+      condition: event.payload is defined and event.payload.alert_type == "critical"
+      action:
+        run_job_template:
+          name: "Resolve Critical Alert"
+          organization: "Default"
